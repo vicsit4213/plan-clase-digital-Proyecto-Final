@@ -8,8 +8,7 @@ export default function EvaluacionForm() {
   const [cargando, setCargando] = useState(false);
   const [mensaje, setMensaje] = useState('');
 
-  // ENDPOINT Y TOKEN CORREGIDOS PARA NOCODB
-  // Usamos la API v1 de datos que es la más estable para inserciones directas
+  // ENDPOINT OFICIAL DE NOCODB CLOUD
   const API_URL = 'https://app.nocodb.com/api/v1/db/data/v1/pb3dzykiqcnyt3h/compromisos_etica';
   const API_TOKEN = 'nc_pat_4UnN7VREMPdWecJGReEUWqjfCUODdnQ8Q7Fdm3ZT';
 
@@ -28,7 +27,7 @@ export default function EvaluacionForm() {
         setRegistros(data.list || []);
       }
     } catch (err) {
-      console.error('Error al obtener datos de NocoDB:', err);
+      console.error('Error al obtener datos:', err);
     }
   };
 
@@ -42,7 +41,7 @@ export default function EvaluacionForm() {
     if (!nombre || !compromiso) return;
 
     setCargando(true);
-    setMensaje('');
+    setMensaje('Conectando con NocoDB...');
 
     try {
       const res = await fetch(API_URL, {
@@ -57,19 +56,19 @@ export default function EvaluacionForm() {
         })
       });
 
+      const data = await res.json();
+
       if (res.ok) {
         setMensaje('¡Tu compromiso de Ética Digital ha sido registrado con éxito!');
         setNombre('');
         setCompromiso('');
-        obtenerRegistros(); // Recargar el mural en tiempo real
+        obtenerRegistros(); // Recargar el mural
       } else {
-        const errorData = await res.json();
-        console.error('Detalle del error NocoDB:', errorData);
-        setMensaje('Ocurrió un error al guardar tu respuesta. Revisa la consola.');
+        // Mostramos el error exacto que devuelve NocoDB en la pantalla
+        setMensaje(`Error NocoDB: ${data.msg || JSON.stringify(data)}`);
       }
     } catch (err) {
-      console.error('Error de conexión:', err);
-      setMensaje('Error de conexión con la base de datos.');
+      setMensaje(`Error de red: ${err.message}`);
     } finally {
       setCargando(false);
     }
@@ -104,16 +103,20 @@ export default function EvaluacionForm() {
             rows="4" 
             value={compromiso} 
             onChange={(e) => setCompromiso(e.target.value)}
-            placeholder="Ej. Me comprometo a no compartir información personal de terceros sin consentimiento..."
+            placeholder="Ej. Me comprometo a no compartir información personal..."
             required 
           />
         </div>
 
         <button type="submit" className="btn-enviar" disabled={cargando}>
-          {cargando ? 'Guardando en la nube...' : 'Registrar Mi Compromiso'}
+          {cargando ? 'Guardando...' : 'Registrar Mi Compromiso'}
         </button>
 
-        {mensaje && <p className="mensaje-feedback">{mensaje}</p>}
+        {mensaje && (
+          <p className="mensaje-feedback" style={{ marginTop: '1rem', padding: '0.5rem', background: '#fef2f2', color: '#991b1b', borderRadius: '4px', border: '1px solid #fecaca' }}>
+            {mensaje}
+          </p>
+        )}
       </motion.form>
 
       <div className="registros-lista" style={{ marginTop: '2rem' }}>
