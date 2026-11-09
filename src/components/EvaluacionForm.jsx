@@ -8,14 +8,14 @@ export default function EvaluacionForm() {
   const [cargando, setCargando] = useState(false);
   const [mensaje, setMensaje] = useState('');
 
-  // ENDPOINT OFICIAL DE NOCODB CLOUD
-  const API_URL = 'https://app.nocodb.com/api/v1/db/data/v1/pb3dzykiqcnyt3h/compromisos_etica';
+  // ENDPOINT Y TOKEN CORREGIDOS PARA API V3 DE NOCODB
+  const API_URL = 'https://app.nocodb.com/api/v3/data/pb3dzykiqcnyt3h/mqbl61zxs1lggru/records';
   const API_TOKEN = 'nc_pat_4UnN7VREMPdWecJGReEUWqjfCUODdnQ8Q7Fdm3ZT';
 
-  // LEER REGISTROS (READ)
+  // 1. LEER REGISTROS (READ)
   const obtenerRegistros = async () => {
     try {
-      const res = await fetch(API_URL, {
+      const res = await fetch(`${API_URL}?pageSize=25`, {
         method: 'GET',
         headers: {
           'xc-token': API_TOKEN,
@@ -24,10 +24,12 @@ export default function EvaluacionForm() {
       });
       if (res.ok) {
         const data = await res.json();
-        setRegistros(data.list || []);
+        // NocoDB v3 devuelve un array directo o un objeto con list/records
+        const lista = Array.isArray(data) ? data : (data.list || data.records || []);
+        setRegistros(lista);
       }
     } catch (err) {
-      console.error('Error al obtener datos:', err);
+      console.error('Error al consultar NocoDB:', err);
     }
   };
 
@@ -35,13 +37,19 @@ export default function EvaluacionForm() {
     obtenerRegistros();
   }, []);
 
-  // CREAR REGISTRO (CREATE)
+  // 2. CREAR REGISTRO (CREATE)
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!nombre || !compromiso) return;
 
     setCargando(true);
-    setMensaje('Conectando con NocoDB...');
+    setMensaje('');
+
+    // Estructura compatible con ambas versiones de NocoDB Cloud
+    const payload = {
+      Estudiante: nombre,
+      Compromiso: compromiso
+    };
 
     try {
       const res = await fetch(API_URL, {
@@ -50,25 +58,37 @@ export default function EvaluacionForm() {
           'Content-Type': 'application/json',
           'xc-token': API_TOKEN
         },
-        body: JSON.stringify({
-          Estudiante: nombre,
-          Compromiso: compromiso
-        })
+        body: JSON.stringify(payload)
       });
-
-      const data = await res.json();
 
       if (res.ok) {
         setMensaje('¡Tu compromiso de Ética Digital ha sido registrado con éxito!');
         setNombre('');
         setCompromiso('');
-        obtenerRegistros(); // Recargar el mural
+        obtenerRegistros(); // Recarga el mural de inmediato
       } else {
-        // Mostramos el error exacto que devuelve NocoDB en la pantalla
-        setMensaje(`Error NocoDB: ${data.msg || JSON.stringify(data)}`);
+        // Si no funciona, intentamos enviarlo envuelto en { data: payload }
+        const resV3 = await fetch(API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'xc-token': API_TOKEN
+          },
+          body: JSON.stringify({ data: payload })
+        });
+
+        if (resV3.ok) {
+          setMensaje('¡Tu compromiso de Ética Digital ha sido registrado con éxito!');
+          setNombre('');
+          setCompromiso('');
+          obtenerRegistros();
+        } else {
+          setMensaje('Error al guardar. Verifica la conexión con NocoDB.');
+        }
       }
     } catch (err) {
-      setMensaje(`Error de red: ${err.message}`);
+      console.error('Error de red:', err);
+      setMensaje('Error de conexión con la base de datos.');
     } finally {
       setCargando(false);
     }
@@ -92,7 +112,7 @@ export default function EvaluacionForm() {
             type="text" 
             value={nombre} 
             onChange={(e) => setNombre(e.target.value)}
-            placeholder="Ej. Carlos Pérez"
+            placeholder="Ej. Carlos Sitamul"
             required 
           />
         </div>
@@ -103,17 +123,17 @@ export default function EvaluacionForm() {
             rows="4" 
             value={compromiso} 
             onChange={(e) => setCompromiso(e.target.value)}
-            placeholder="Ej. Me comprometo a no compartir información personal..."
+            placeholder="Ej. Me comprometo a no compartir información personal sin consentimiento..."
             required 
           />
         </div>
 
         <button type="submit" className="btn-enviar" disabled={cargando}>
-          {cargando ? 'Guardando...' : 'Registrar Mi Compromiso'}
+          {cargando ? 'Guardando en la nube...' : 'Registrar Mi Compromiso'}
         </button>
 
         {mensaje && (
-          <p className="mensaje-feedback" style={{ marginTop: '1rem', padding: '0.5rem', background: '#fef2f2', color: '#991b1b', borderRadius: '4px', border: '1px solid #fecaca' }}>
+          <p className="mensaje-feedback" style={{ marginTop: '1rem', fontWeight: 'bold' }}>
             {mensaje}
           </p>
         )}
@@ -132,8 +152,8 @@ export default function EvaluacionForm() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
               >
-                <h4>{item.Estudiante}</h4>
-                <p>"{item.Compromiso}"</p>
+                <h4>{item.Estudiante || item.data?.Estudiante}</h4>
+                <p>"{item.Compromiso || item.data?.Compromiso}"</p>
               </motion.div>
             ))}
           </div>
