@@ -1,165 +1,115 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 
 export default function EvaluacionForm() {
   const [nombre, setNombre] = useState('');
-  const [respuestas, setRespuestas] = useState({
-    p1: null,
-    p2: null,
-    p3: null,
-    p4: null,
-    p5: null
-  });
-  const [resultado, setResultado] = useState(null);
+  const [compromiso, setCompromiso] = useState('');
+  const [registros, setRegistros] = useState([]);
+  const [cargando, setCargando] = useState(false);
+  const [mensaje, setMensaje] = useState('');
 
-  const preguntas = [
-    { id: 'p1', texto: '1. ¿Verifico la veracidad de la información antes de compartir noticias o publicaciones en mis redes sociales?' },
-    { id: 'p2', texto: '2. ¿Respeto la privacidad de mis compañeros evitando subir fotos o videos de ellos sin su autorización explícita?' },
-    { id: 'p3', texto: '3. ¿Utilizo un lenguaje respetuoso, empático y constructivo al interactuar en foros y chats escolares (Netiqueta)?' },
-    { id: 'p4', texto: '4. ¿Comprendo que lo que publico en internet deja una huella digital permanente que puede afectar mi futuro?' },
-    { id: 'p5', texto: '5. ¿Protejo mis cuentas digitales utilizando contraseñas seguras y evitando compartir mis claves de acceso?' }
-  ];
-
-  const handleOpcion = (idPregunta, valor) => {
-    setRespuestas({ ...respuestas, [idPregunta]: valor });
-  };
+  useEffect(() => {
+    const guardados = JSON.parse(localStorage.getItem('compromisos_etica_ux') || '[]');
+    if (guardados.length === 0) {
+      const iniciales = [
+        { Id: 1, Estudiante: 'María Gómez', Compromiso: 'Me comprometo a verificar las fuentes antes de compartir información en mis redes sociales.' },
+        { Id: 2, Estudiante: 'Josué López', Compromiso: 'Respetaré la privacidad de mis compañeros y no publicaré fotos sin su consentimiento.' }
+      ];
+      setRegistros(iniciales);
+      localStorage.setItem('compromisos_etica_ux', JSON.stringify(iniciales));
+    } else {
+      setRegistros(guardados);
+    }
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!nombre.trim()) {
-      alert('Por favor ingresa tu nombre completo.');
-      return;
-    }
-    // Verificar que todas estén respondidas
-    const totalRespondidas = Object.values(respuestas).filter(v => v !== null).length;
-    if (totalRespondidas < 5) {
-      alert('Por favor responde las 5 preguntas del cuestionario.');
-      return;
-    }
+    if (!nombre.trim() || !compromiso.trim()) return;
 
-    // Calcular aciertos (asumiendo que "Sí" es la respuesta correcta/ética)
-    const aciertos = Object.values(respuestas).filter(v => v === 'Sí').length;
-    
-    setResultado({
-      nombre,
-      aciertos,
-      total: 5
-    });
-  };
+    setCargando(true);
+    setMensaje('');
 
-  const reiniciarCuestionario = () => {
+    const nuevoRegistro = {
+      Id: Date.now(),
+      Estudiante: nombre,
+      Compromiso: compromiso
+    };
+
+    const nuevosRegistros = [nuevoRegistro, ...registros];
+    setRegistros(nuevosRegistros);
+    localStorage.setItem('compromisos_etica_ux', JSON.stringify(nuevosRegistros));
+
+    setMensaje('¡Tu compromiso de Ética Digital ha sido registrado con éxito en el mural!');
     setNombre('');
-    setRespuestas({ p1: null, p2: null, p3: null, p4: null, p5: null });
-    setResultado(null);
+    setCompromiso('');
+    setCargando(false);
   };
 
   return (
-    <section className="evaluacion-section">
-      <h2 className="titulo-seccion">Autoevaluación Interactiva de Ética Digital</h2>
-      <p>Responde las siguientes cuestiones para medir tu nivel de conciencia y responsabilidad digital.</p>
+    <div>
+      <h2 className="titulo-seccion-moderno">Compromiso y Autoevaluación Digital</h2>
+      <p style={{ color: '#64748b', marginBottom: '1.5rem' }}>Registra tu compromiso personal de Netiqueta y Privacidad para finalizar la sesión de aprendizaje.</p>
 
-      {!resultado ? (
-        <motion.form 
-          onSubmit={handleSubmit}
-          className="form-card"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-        >
-          <div className="form-group" style={{ marginBottom: '1.5rem' }}>
-            <label style={{ fontWeight: 'bold' }}>Nombre del Estudiante:</label>
-            <input 
-              type="text" 
-              value={nombre} 
-              onChange={(e) => setNombre(e.target.value)}
-              placeholder="Ej. Carlos Sitamul"
-              required 
-              style={{ width: '100%', padding: '0.8rem', marginTop: '0.4rem', borderRadius: '8px', border: '1px solid #cbd5e1' }}
-            />
-          </div>
+      <motion.form 
+        onSubmit={handleSubmit}
+        className="form-card-moderno"
+        initial={{ scale: 0.98, opacity: 0 }}
+        whileInView={{ scale: 1, opacity: 1 }}
+        viewport={{ once: true }}
+      >
+        <div className="form-group-moderno">
+          <label>Nombre del Estudiante:</label>
+          <input 
+            type="text" 
+            value={nombre} 
+            onChange={(e) => setNombre(e.target.value)}
+            placeholder="Ej. Carlos Sitamul"
+            required 
+          />
+        </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-            {preguntas.map((item) => (
-              <div key={item.id} className="pregunta-card" style={{ background: '#f8fafc', padding: '1rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                <p style={{ fontWeight: '600', marginBottom: '0.8rem' }}>{item.texto}</p>
-                <div style={{ display: 'flex', gap: '1rem' }}>
-                  <button
-                    type="button"
-                    onClick={() => handleOpcion(item.id, 'Sí')}
-                    style={{
-                      flex: 1,
-                      padding: '0.6rem',
-                      borderRadius: '6px',
-                      border: 'none',
-                      fontWeight: 'bold',
-                      cursor: 'pointer',
-                      background: respuestas[item.id] === 'Sí' ? '#10b981' : '#e2e8f0',
-                      color: respuestas[item.id] === 'Sí' ? 'white' : '#334155',
-                      transition: 'all 0.2s'
-                    }}
-                  >
-                    Sí, me comprometo / Soy consciente
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleOpcion(item.id, 'No')}
-                    style={{
-                      flex: 1,
-                      padding: '0.6rem',
-                      borderRadius: '6px',
-                      border: 'none',
-                      fontWeight: 'bold',
-                      cursor: 'pointer',
-                      background: respuestas[item.id] === 'No' ? '#ef4444' : '#e2e8f0',
-                      color: respuestas[item.id] === 'No' ? 'white' : '#334155',
-                      transition: 'all 0.2s'
-                    }}
-                  >
-                    No / Debo mejorar
-                  </button>
-                </div>
-              </div>
+        <div className="form-group-moderno">
+          <label>Mi Compromiso de Ética Digital:</label>
+          <textarea 
+            rows="4" 
+            value={compromiso} 
+            onChange={(e) => setCompromiso(e.target.value)}
+            placeholder="Ej. Me comprometo a navegar con responsabilidad, proteger mis datos y respetar a los demás..."
+            required 
+          />
+        </div>
+
+        <button type="submit" className="btn-accion-moderno" disabled={cargando}>
+          {cargando ? 'Guardando en la nube...' : 'Registrar Mi Compromiso'}
+        </button>
+
+        {mensaje && (
+          <p style={{ marginTop: '0.5rem', color: '#059669', fontWeight: '600', background: '#ecfdf5', padding: '0.75rem', borderRadius: '6px', border: '1px solid #a7f3d0' }}>
+            {mensaje}
+          </p>
+        )}
+      </motion.form>
+
+      <div style={{ marginTop: '2.5rem' }}>
+        <h3 style={{ fontSize: '1.25rem', fontWeight: '700', color: '#0f172a', marginBottom: '1rem' }}>Mural de Compromisos Registrados (Tiempo Real)</h3>
+        {registros.length === 0 ? (
+          <p style={{ color: '#94a3b8' }}>Aún no hay compromisos registrados.</p>
+        ) : (
+          <div className="grid-mural">
+            {registros.map((item, index) => (
+              <motion.div 
+                key={item.Id || index} 
+                className="card-mural"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+              >
+                <h4 style={{ color: '#1e3a8a', fontSize: '1rem', marginBottom: '0.4rem' }}>{item.Estudiante}</h4>
+                <p style={{ fontSize: '0.9rem', color: '#475569', fontStyle: 'italic' }}>"{item.Compromiso}"</p>
+              </motion.div>
             ))}
           </div>
-
-          <button 
-            type="submit" 
-            className="btn-enviar"
-            style={{ marginTop: '2rem', width: '100%', background: '#4f46e5', color: 'white', padding: '0.9rem', borderRadius: '8px', fontWeight: 'bold', border: 'none', cursor: 'pointer' }}
-          >
-            Evaluar Mis Respuestas
-          </button>
-        </motion.form>
-      ) : (
-        <motion.div 
-          className="resultado-modal"
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          style={{ background: 'white', padding: '2.5rem', borderRadius: '12px', textAlign: 'center', boxShadow: '0 4px 15px rgba(0,0,0,0.1)' }}
-        >
-          <h3 style={{ fontSize: '1.8rem', color: '#1e293b', marginBottom: '1rem' }}>¡Resultado de la Autoevaluación!</h3>
-          <p style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>Estudiante: <strong>{resultado.nombre}</strong></p>
-          <p style={{ fontSize: '1.2rem', fontWeight: 'bold', color: resultado.aciertos >= 4 ? '#10b981' : '#d97706', marginBottom: '1.5rem' }}>
-            Obtuviste {resultado.aciertos} de {resultado.aciertos === 5 ? '5 respuestas con enfoque ético positivo.' : '5 respuestas.'}
-          </p>
-
-          <div style={{ background: '#f1f5f9', padding: '1.5rem', borderRadius: '8px', marginBottom: '1.5rem', textAlign: 'left' }}>
-            {resultado.aciertos === 5 ? (
-              <p>🌟 <strong>¡Excelente Ciudadanía Digital!</strong> Demuestras un alto nivel de conciencia sobre la privacidad, el respeto y la ciberseguridad. Sigue siendo un ejemplo en la red.</p>
-            ) : resultado.aciertos >= 3 ? (
-              <p>👍 <strong>¡Puedes hacerlo mejor!</strong> Tienes buenas bases, pero hay áreas de oportunidad en tu privacidad y manejo de huella digital. Te invitamos a revisar los casos de estudio de arriba.</p>
-            ) : (
-              <p>🔍 <strong>Sigue investigando más.</strong> Es importante que profundices en los conceptos de netiqueta y protección de datos personales para navegar de forma segura y responsable.</p>
-            )}
-          </div>
-
-          <button 
-            onClick={reiniciarCuestionario}
-            style={{ background: '#06b6d4', color: 'white', border: 'none', padding: '0.8rem 1.5rem', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}
-          >
-            Intentar de Nuevo
-          </button>
-        </motion.div>
-      )}
-    </section>
+        )}
+      </div>
+    </div>
   );
 }
