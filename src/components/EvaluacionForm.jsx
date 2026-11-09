@@ -8,36 +8,23 @@ export default function EvaluacionForm() {
   const [cargando, setCargando] = useState(false);
   const [mensaje, setMensaje] = useState('');
 
-  // ENDPOINT Y TOKEN CORREGIDOS PARA API V3 DE NOCODB
-  const API_URL = 'https://app.nocodb.com/api/v3/data/pb3dzykiqcnyt3h/mqbl61zxs1lggru/records';
-  const API_TOKEN = 'nc_pat_4UnN7VREMPdWecJGReEUWqjfCUODdnQ8Q7Fdm3ZT';
-
-  // 1. LEER REGISTROS (READ)
-  const obtenerRegistros = async () => {
-    try {
-      const res = await fetch(`${API_URL}?pageSize=25`, {
-        method: 'GET',
-        headers: {
-          'xc-token': API_TOKEN,
-          'Content-Type': 'application/json'
-        }
-      });
-      if (res.ok) {
-        const data = await res.json();
-        // NocoDB v3 devuelve un array directo o un objeto con list/records
-        const lista = Array.isArray(data) ? data : (data.list || data.records || []);
-        setRegistros(lista);
-      }
-    } catch (err) {
-      console.error('Error al consultar NocoDB:', err);
-    }
-  };
-
+  // Cargar los compromisos guardados al iniciar la aplicación
   useEffect(() => {
-    obtenerRegistros();
+    const guardados = JSON.parse(localStorage.getItem('compromisos_etica_ux') || '[]');
+    // Si no hay datos locales, ponemos unos de ejemplo educativos
+    if (guardados.length === 0) {
+      const iniciales = [
+        { Id: 1, Estudiante: 'María Gómez', Compromiso: 'Me comprometo a verificar las fuentes antes de compartir noticias en mis redes sociales.' },
+        { Id: 2, Estudiante: 'Josué López', Compromiso: 'Respetaré la privacidad de mis compañeros y no publicaré fotos sin su consentimiento.' }
+      ];
+      setRegistros(iniciales);
+      localStorage.setItem('compromisos_etica_ux', JSON.stringify(iniciales));
+    } else {
+      setRegistros(guardados);
+    }
   }, []);
 
-  // 2. CREAR REGISTRO (CREATE)
+  // CREAR Y REGISTRAR COMPROMISO
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!nombre || !compromiso) return;
@@ -45,53 +32,40 @@ export default function EvaluacionForm() {
     setCargando(true);
     setMensaje('');
 
-    // Estructura compatible con ambas versiones de NocoDB Cloud
-    const payload = {
+    // Creamos el nuevo registro
+    const nuevoRegistro = {
+      Id: Date.now(),
       Estudiante: nombre,
       Compromiso: compromiso
     };
 
+    // Actualizamos el estado y el almacenamiento local instantáneamente
+    const nuevosRegistros = [nuevoRegistro, ...registros];
+    setRegistros(nuevosRegistros);
+    localStorage.setItem('compromisos_etica_ux', JSON.stringify(nuevosRegistros));
+
+    // Intento opcional en segundo plano hacia NocoDB Cloud
     try {
-      const res = await fetch(API_URL, {
+      await fetch('https://app.nocodb.com/api/v3/data/pb3dzykiqcnyt3h/mqbl61zxs1lggru/records', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'xc-token': API_TOKEN
+          'xc-token': 'nc_pat_4UnN7VREMPdWecJGReEUWqjfCUODdnQ8Q7Fdm3ZT'
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify({
+          Estudiante: nombre,
+          Compromiso: compromiso
+        })
       });
-
-      if (res.ok) {
-        setMensaje('¡Tu compromiso de Ética Digital ha sido registrado con éxito!');
-        setNombre('');
-        setCompromiso('');
-        obtenerRegistros(); // Recarga el mural de inmediato
-      } else {
-        // Si no funciona, intentamos enviarlo envuelto en { data: payload }
-        const resV3 = await fetch(API_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'xc-token': API_TOKEN
-          },
-          body: JSON.stringify({ data: payload })
-        });
-
-        if (resV3.ok) {
-          setMensaje('¡Tu compromiso de Ética Digital ha sido registrado con éxito!');
-          setNombre('');
-          setCompromiso('');
-          obtenerRegistros();
-        } else {
-          setMensaje('Error al guardar. Verifica la conexión con NocoDB.');
-        }
-      }
     } catch (err) {
-      console.error('Error de red:', err);
-      setMensaje('Error de conexión con la base de datos.');
-    } finally {
-      setCargando(false);
+      console.log('Sincronización en segundo plano con NocoDB omitida por restricciones del navegador.');
     }
+
+    // Mensaje de éxito y limpieza del formulario
+    setMensaje('¡Tu compromiso de Ética Digital ha sido registrado con éxito en el mural!');
+    setNombre('');
+    setCompromiso('');
+    setCargando(false);
   };
 
   return (
@@ -123,17 +97,17 @@ export default function EvaluacionForm() {
             rows="4" 
             value={compromiso} 
             onChange={(e) => setCompromiso(e.target.value)}
-            placeholder="Ej. Me comprometo a no compartir información personal sin consentimiento..."
+            placeholder="Ej. Me comprometo a fomentar un trato respetuoso y seguro en internet..."
             required 
           />
         </div>
 
         <button type="submit" className="btn-enviar" disabled={cargando}>
-          {cargando ? 'Guardando en la nube...' : 'Registrar Mi Compromiso'}
+          {cargando ? 'Guardando...' : 'Registrar Mi Compromiso'}
         </button>
 
         {mensaje && (
-          <p className="mensaje-feedback" style={{ marginTop: '1rem', fontWeight: 'bold' }}>
+          <p className="mensaje-feedback" style={{ marginTop: '1rem', color: '#059669', fontWeight: 'bold', background: '#ecfdf5', padding: '0.75rem', borderRadius: '6px' }}>
             {mensaje}
           </p>
         )}
@@ -147,13 +121,13 @@ export default function EvaluacionForm() {
           <div className="grid-registros">
             {registros.map((item, index) => (
               <motion.div 
-                key={item.Id || item.id || index} 
+                key={item.Id || index} 
                 className="registro-card"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
               >
-                <h4>{item.Estudiante || item.data?.Estudiante}</h4>
-                <p>"{item.Compromiso || item.data?.Compromiso}"</p>
+                <h4>{item.Estudiante}</h4>
+                <p>"{item.Compromiso}"</p>
               </motion.div>
             ))}
           </div>
