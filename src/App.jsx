@@ -9,16 +9,15 @@ export default function App() {
   const [cargando, setCargando] = useState(false);
   const [mensaje, setMensaje] = useState('');
 
-  // Cargar los compromisos guardados al iniciar
   useEffect(() => {
-    const guardados = JSON.parse(localStorage.getItem('compromisos_etica_ux') || '[]');
+    const guardados = JSON.parse(localStorage.getItem('compromisos_etica_ux_v2') || '[]');
     if (guardados.length === 0) {
       const iniciales = [
-        { Id: 1, Estudiante: 'María Gómez', Compromiso: 'Me comprometo a verificar las fuentes antes de compartir información en mis redes sociales.' },
-        { Id: 2, Estudiante: 'Josué López', Compromiso: 'Respetaré la privacidad de mis compañeros y no publicaré fotos sin su consentimiento.' }
+        { Id: 1, Estudiante: 'Lucía Morales', Compromiso: 'Me comprometo a verificar la información antes de compartirla para evitar noticias falsas.' },
+        { Id: 2, Estudiante: 'Carlos Pérez', Compromiso: 'Mantendré una convivencia respetuosa y evitaré cualquier tipo de ciberacoso.' }
       ];
       setRegistros(iniciales);
-      localStorage.setItem('compromisos_etica_ux', JSON.stringify(iniciales));
+      localStorage.setItem('compromisos_etica_ux_v2', JSON.stringify(iniciales));
     } else {
       setRegistros(guardados);
     }
@@ -39,230 +38,208 @@ export default function App() {
 
     const nuevosRegistros = [nuevoRegistro, ...registros];
     setRegistros(nuevosRegistros);
-    localStorage.setItem('compromisos_etica_ux', JSON.stringify(nuevosRegistros));
+    localStorage.setItem('compromisos_etica_ux_v2', JSON.stringify(nuevosRegistros));
 
-    setMensaje('¡Tu compromiso de Ética Digital ha sido registrado con éxito en el mural!');
+    setMensaje('¡Compromiso registrado con éxito en el mural interactivo!');
     setNombre('');
     setCompromiso('');
     setCargando(false);
   };
 
   return (
-    <div className="app-container">
+    <div style={{ minHeight: '100vh', backgroundColor: '#090d16', color: '#f8fafc', fontFamily: "'Inter', sans-serif" }}>
       
-      {/* NAVBAR SUPERIOR MODERNO */}
-      <motion.header 
-        className="navbar-moderno"
-        initial={{ y: -50, opacity: 0 }}
+      {/* NAVBAR FLOTANTE ESTILO AGENCIA */}
+      <motion.nav 
+        initial={{ y: -30, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.6 }}
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: '1.2rem 8%',
+          background: 'rgba(15, 23, 42, 0.85)',
+          backdropFilter: 'blur(12px)',
+          borderBottom: '1px solid rgba(245, 158, 11, 0.2)',
+          position: 'sticky',
+          top: 0,
+          zIndex: 1000
+        }}
       >
-        <div className="nav-brand">
-          <span className="nav-logo-box">TIC</span>
-          <span className="nav-title">Plan de Clase Digital</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <div style={{ background: '#f59e0b', color: '#0f172a', fontWeight: '900', padding: '0.4rem 0.7rem', borderRadius: '8px', fontSize: '1rem' }}>TIC</div>
+          <span style={{ fontWeight: '700', fontSize: '1.1rem', letterSpacing: '0.5px' }}>Ética Digital Studio</span>
         </div>
-        <ul className="nav-links">
-          <li><a href="#teoria">Teoría</a></li>
-          <li><a href="#objetivos">Objetivos</a></li>
-          <li><a href="#casos">Casos</a></li>
-          <li><a href="#evaluacion">Compromiso</a></li>
-        </ul>
-        <a href="#evaluacion" className="nav-btn">Evaluarme</a>
-      </motion.header>
+        <div style={{ display: 'flex', gap: '2rem', fontSize: '0.95rem', fontWeight: '500' }}>
+          <a href="#teoria" style={{ color: '#94a3b8', textDecoration: 'none' }}>Teoría</a>
+          <a href="#objetivos" style={{ color: '#94a3b8', textDecoration: 'none' }}>Objetivos</a>
+          <a href="#casos" style={{ color: '#94a3b8', textDecoration: 'none' }}>Casos</a>
+          <a href="#mural" style={{ color: '#f59e0b', textDecoration: 'none', fontWeight: '600' }}>Mural</a>
+        </div>
+      </motion.nav>
 
-      {/* HERO SECTION DE ALTO IMPACTO (Azul y Dorado) */}
-      <section className="hero-section">
+      {/* HERO SECTION DE IMPACTO */}
+      <header style={{ textAlign: 'center', padding: '6rem 1.5rem 4rem 1.5rem', background: 'radial-gradient(circle at center, #1e293b 0%, #090d16 100%)' }}>
         <motion.div 
-          className="hero-badge"
-          initial={{ scale: 0.8, opacity: 0 }}
+          initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          transition={{ duration: 0.5 }}
+          style={{ display: 'inline-block', background: 'rgba(245, 158, 11, 0.1)', color: '#f59e0b', border: '1px solid rgba(245, 158, 11, 0.3)', padding: '0.4rem 1.2rem', borderRadius: '50px', fontSize: '0.85rem', fontWeight: '700', textTransform: 'uppercase', marginBottom: '1.5rem', letterSpacing: '1px' }}
         >
           Plan de Clase Interactivo • Nivel Medio
         </motion.div>
-
+        
         <motion.h1 
-          className="hero-title"
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          style={{ fontSize: 'clamp(2.2rem, 5vw, 3.8rem)', fontWeight: '900', maxWidth: '850px', margin: '0 auto 1.5rem auto', lineHeight: '1.15' }}
         >
-          Ética Digital y <span>Huella en la Red</span>
+          Navegación Responsable y <span style={{ color: '#f59e0b' }}>Huella Digital</span>
         </motion.h1>
 
         <motion.p 
-          className="hero-subtitle"
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          style={{ fontSize: '1.15rem', color: '#94a3b8', maxWidth: '650px', margin: '0 auto' }}
         >
-          Aprende a navegar con responsabilidad, protegiendo tu privacidad y fomentando un trato respetuoso en el entorno digital.
+          Experiencia de aprendizaje interactiva diseñada para promover la ciberseguridad, la privacidad y la netiqueta escolar.
         </motion.p>
-      </section>
+      </header>
 
-      {/* MAIN CONTENT */}
-      <main className="main-content">
+      {/* CONTENEDOR PRINCIPAL */}
+      <main style={{ maxWidth: '1000px', margin: '0 auto', padding: '0 1.5rem 5rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '3rem' }}>
         
-        {/* SECCIÓN: MARCO TEÓRICO */}
+        {/* SECCIÓN TEORÍA */}
         <motion.section 
-          id="teoria" 
-          className="seccion-card"
+          id="teoria"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          style={{ background: '#111827', border: '1px solid #1f2937', borderRadius: '20px', padding: '2.5rem', boxShadow: '0 10px 30px rgba(0,0,0,0.3)' }}
         >
-          <h2 className="titulo-seccion-moderno">Fundamentos de la Ética Digital</h2>
-          <div style={{ lineHeight: '1.8', color: '#334155' }}>
-            <p style={{ marginBottom: '1rem' }}>
-              La <strong>Ética Digital</strong> comprende el conjunto de principios y valores que orientan nuestro comportamiento al interactuar con las Tecnologías de la Información. En el Nivel Medio, los estudiantes se enfrentan cotidianamente a escenarios virtuales donde la privacidad y la seguridad son clave.
-            </p>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem', marginTop: '1.5rem' }}>
-              <motion.div whileHover={{ scale: 1.03 }} style={{ background: '#f8fafc', padding: '1rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                <strong style={{ color: '#1e3a8a' }}>🔒 Privacidad:</strong> Conciencia sobre qué datos personales exponer en plataformas públicas.
-              </motion.div>
-              <motion.div whileHover={{ scale: 1.03 }} style={{ background: '#f8fafc', padding: '1rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                <strong style={{ color: '#1e3a8a' }}>👣 Huella Digital:</strong> Comprensión de la permanencia y alcance de nuestras publicaciones.
-              </motion.div>
-              <motion.div whileHover={{ scale: 1.03 }} style={{ background: '#f8fafc', padding: '1rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                <strong style={{ color: '#1e3a8a' }}>🤝 Netiqueta:</strong> Cortesía, empatía y prevención activa del ciberacoso.
-              </motion.div>
+          <h2 style={{ fontSize: '1.8rem', fontWeight: '800', marginBottom: '1rem', color: '#f8fafc', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <span style={{ color: '#f59e0b' }}>⚡</span> Fundamentos de la Ética Digital
+          </h2>
+          <p style={{ color: '#94a3b8', lineHeight: '1.7', marginBottom: '1.5rem' }}>
+            La <strong>Ética Digital</strong> define las normas de conducta que rigen el uso de internet y las tecnologías. En el Nivel Medio, comprender este concepto es vital para proteger la identidad virtual y fomentar el respeto mutuo.
+          </p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
+            <div style={{ background: '#1f2937', padding: '1.25rem', borderRadius: '12px', borderLeft: '4px solid #f59e0b' }}>
+              <h4 style={{ color: '#f59e0b', marginBottom: '0.4rem' }}>🔒 Privacidad</h4>
+              <p style={{ fontSize: '0.9rem', color: '#94a3b8' }}>Resguardo de datos personales y credenciales de acceso.</p>
+            </div>
+            <div style={{ background: '#1f2937', padding: '1.25rem', borderRadius: '12px', borderLeft: '4px solid #f59e0b' }}>
+              <h4 style={{ color: '#f59e0b', marginBottom: '0.4rem' }}>👣 Huella Digital</h4>
+              <p style={{ fontSize: '0.9rem', color: '#94a3b8' }}>Conciencia sobre el rastro que dejamos al publicar en redes.</p>
+            </div>
+            <div style={{ background: '#1f2937', padding: '1.25rem', borderRadius: '12px', borderLeft: '4px solid #f59e0b' }}>
+              <h4 style={{ color: '#f59e0b', marginBottom: '0.4rem' }}>🤝 Netiqueta</h4>
+              <p style={{ fontSize: '0.9rem', color: '#94a3b8' }}>Normas de cortesía y empatía en comunidades virtuales.</p>
             </div>
           </div>
         </motion.section>
 
-        {/* SECCIÓN: OBJETIVOS */}
+        {/* SECCIÓN OBJETIVOS */}
         <motion.section 
-          id="objetivos" 
-          className="seccion-card"
+          id="objetivos"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          style={{ background: '#111827', border: '1px solid #1f2937', borderRadius: '20px', padding: '2.5rem' }}
         >
-          <h2 className="titulo-seccion-moderno">Objetivos de la Sesión</h2>
-          <div className="grid-objetivos">
-            <motion.div className="card-objetivo-item" whileHover={{ y: -5 }}>
-              <div className="icono-box">🔒</div>
-              <h3 style={{ fontSize: '1.1rem', marginBottom: '0.5rem', color: '#0f172a' }}>Protección de Privacidad</h3>
-              <p style={{ fontSize: '0.95rem', color: '#64748b' }}>Identificar qué datos personales no deben compartirse públicamente en redes sociales.</p>
-            </motion.div>
-            <motion.div className="card-objetivo-item" whileHover={{ y: -5 }}>
-              <div className="icono-box">👣</div>
-              <h3 style={{ fontSize: '1.1rem', marginBottom: '0.5rem', color: '#0f172a' }}>Huella Digital Consciente</h3>
-              <p style={{ fontSize: '0.95rem', color: '#64748b' }}>Comprender la permanencia y el alcance de las publicaciones en el entorno web.</p>
-            </motion.div>
-            <motion.div className="card-objetivo-item" whileHover={{ y: -5 }}>
-              <div className="icono-box">🤝</div>
-              <h3 style={{ fontSize: '1.1rem', marginBottom: '0.5rem', color: '#0f172a' }}>Netiqueta y Respeto</h3>
-              <p style={{ fontSize: '0.95rem', color: '#64748b' }}>Promover una convivencia digital empática y libre de ciberacoso escolar.</p>
-            </motion.div>
+          <h2 style={{ fontSize: '1.8rem', fontWeight: '800', marginBottom: '1.5rem', color: '#f8fafc' }}>
+            🎯 Objetivos de Aprendizaje
+          </h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.5rem' }}>
+            <div style={{ background: '#1f2937', padding: '1.5rem', borderRadius: '14px' }}>
+              <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🛡️</div>
+              <h3 style={{ fontSize: '1.1rem', marginBottom: '0.4rem', color: '#f59e0b' }}>Autoprotección</h3>
+              <p style={{ fontSize: '0.9rem', color: '#94a3b8' }}>Reconocer los riesgos asociados a la sobreexposición en internet.</p>
+            </div>
+            <div style={{ background: '#1f2937', padding: '1.5rem', borderRadius: '14px' }}>
+              <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>💬</div>
+              <h3 style={{ fontSize: '1.1rem', marginBottom: '0.4rem', color: '#f59e0b' }}>Empatía Colectiva</h3>
+              <p style={{ fontSize: '0.9rem', color: '#94a3b8' }}>Fomentar interacciones sanas y prevenir el ciberacoso escolar.</p>
+            </div>
           </div>
         </motion.section>
 
-        {/* SECCIÓN: CASOS PRÁCTICOS */}
+        {/* SECCIÓN FORMULARIO Y MURAL */}
         <motion.section 
-          id="casos" 
-          className="seccion-card"
+          id="mural"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          style={{ background: '#111827', border: '1px solid #1f2937', borderRadius: '20px', padding: '2.5rem' }}
         >
-          <h2 className="titulo-seccion-moderno">Casos Prácticos de Análisis Ético</h2>
-          <div className="grid-casos">
-            <motion.div className="caso-item" whileHover={{ scale: 1.01 }}>
-              <h4 style={{ color: '#1e3a8a', marginBottom: '0.4rem' }}>Caso 1: El dilema de la contraseña compartida</h4>
-              <p style={{ fontSize: '0.95rem', color: '#334155', marginBottom: '0.5rem' }}>Un amigo te pide la contraseña de tu cuenta personal para ver un videojuego.</p>
-              <p style={{ fontSize: '0.85rem', color: '#d97706', fontWeight: '600' }}>💡 Consejo ético: Las credenciales son intransferibles y resguardan tu ciberseguridad.</p>
-            </motion.div>
-            <motion.div className="caso-item" whileHover={{ scale: 1.01 }}>
-              <h4 style={{ color: '#1e3a8a', marginBottom: '0.4rem' }}>Caso 2: La fotografía sin consentimiento</h4>
-              <p style={{ fontSize: '0.95rem', color: '#334155', marginBottom: '0.5rem' }}>Tomas una foto graciosa de un compañero en clase y piensas subirla a estados públicos.</p>
-              <p style={{ fontSize: '0.85rem', color: '#d97706', fontWeight: '600' }}>💡 Consejo ético: Respeta la dignidad y el derecho a la propia imagen de los demás.</p>
-            </motion.div>
-          </div>
-        </motion.section>
+          <h2 style={{ fontSize: '1.8rem', fontWeight: '800', marginBottom: '0.5rem', color: '#f8fafc' }}>
+            ✍️ Mural de Compromiso Digital
+          </h2>
+          <p style={{ color: '#94a3b8', marginBottom: '2rem' }}>Ingresa tus datos y plasma tu compromiso personal para sellar la sesión.</p>
 
-        {/* SECCIÓN: EVALUACIÓN Y MURAL */}
-        <motion.section 
-          id="evaluacion" 
-          className="seccion-card"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          <h2 className="titulo-seccion-moderno">Compromiso y Autoevaluación Digital</h2>
-          <p style={{ color: '#64748b', marginBottom: '1.5rem' }}>Registra tu compromiso personal de Netiqueta y Privacidad para finalizar la sesión.</p>
-
-          <motion.form 
-            onSubmit={handleSubmit}
-            className="form-card-moderno"
-            initial={{ scale: 0.98, opacity: 0 }}
-            whileInView={{ scale: 1, opacity: 1 }}
-            viewport={{ once: true }}
-          >
-            <div className="form-group-moderno">
-              <label>Nombre del Estudiante:</label>
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            <div>
+              <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: '600', marginBottom: '0.5rem', color: '#cbd5e1' }}>Nombre del Estudiante:</label>
               <input 
                 type="text" 
                 value={nombre} 
-                onChange={(e) => setNombre(e.target.value)}
-                placeholder="Ej. Carlos Sitamul"
+                onChange={(e) => setNombre(e.target.value)} 
+                placeholder="Ej. Víctor Sitamul" 
                 required 
+                style={{ width: '100%', padding: '0.9rem 1rem', background: '#1f2937', border: '1px solid #374151', borderRadius: '10px', color: 'white', fontSize: '1rem', outline: 'none' }}
               />
             </div>
-
-            <div className="form-group-moderno">
-              <label>Mi Compromiso de Ética Digital:</label>
+            <div>
+              <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: '600', marginBottom: '0.5rem', color: '#cbd5e1' }}>Mi Compromiso Ético:</label>
               <textarea 
                 rows="4" 
                 value={compromiso} 
-                onChange={(e) => setCompromiso(e.target.value)}
-                placeholder="Ej. Me comprometo a navegar con responsabilidad, proteger mis datos y respetar a los demás..."
+                onChange={(e) => setCompromiso(e.target.value)} 
+                placeholder="Ej. Me comprometo a navegar con responsabilidad y respetar la privacidad ajena..." 
                 required 
+                style={{ width: '100%', padding: '0.9rem 1rem', background: '#1f2937', border: '1px solid #374151', borderRadius: '10px', color: 'white', fontSize: '1rem', outline: 'none', resize: 'vertical' }}
               />
             </div>
-
-            <button type="submit" className="btn-accion-moderno" disabled={cargando}>
-              {cargando ? 'Guardando...' : 'Registrar Mi Compromiso'}
+            <button 
+              type="submit" 
+              disabled={cargando}
+              style={{ background: '#f59e0b', color: '#0f172a', fontWeight: '800', padding: '1rem', borderRadius: '10px', border: 'none', cursor: 'pointer', fontSize: '1rem', transition: 'opacity 0.2s' }}
+            >
+              {cargando ? 'Guardando...' : 'Publicar en el Mural'}
             </button>
-
             {mensaje && (
-              <p style={{ marginTop: '0.5rem', color: '#059669', fontWeight: '600', background: '#ecfdf5', padding: '0.75rem', borderRadius: '6px', border: '1px solid #a7f3d0' }}>
+              <p style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#34d399', border: '1px solid rgba(16, 185, 129, 0.3)', padding: '0.75rem', borderRadius: '8px', fontWeight: '600', textAlign: 'center' }}>
                 {mensaje}
               </p>
             )}
-          </motion.form>
+          </form>
 
-          <div style={{ marginTop: '2.5rem' }}>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: '700', color: '#0f172a', marginBottom: '1rem' }}>Mural de Compromisos Registrados (Tiempo Real)</h3>
-            {registros.length === 0 ? (
-              <p style={{ color: '#94a3b8' }}>Aún no hay compromisos registrados.</p>
-            ) : (
-              <div className="grid-mural">
-                {registros.map((item, index) => (
-                  <motion.div 
-                    key={item.Id || index} 
-                    className="card-mural"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                  >
-                    <h4 style={{ color: '#1e3a8a', fontSize: '1rem', marginBottom: '0.4rem' }}>{item.Estudiante}</h4>
-                    <p style={{ fontSize: '0.9rem', color: '#475569', fontStyle: 'italic' }}>"{item.Compromiso}"</p>
-                  </motion.div>
-                ))}
-              </div>
-            )}
+          {/* LISTA DE REGISTROS */}
+          <div style={{ marginTop: '3rem' }}>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '1rem', color: '#f8fafc' }}>Mural en Tiempo Real</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1rem' }}>
+              {registros.map((item, index) => (
+                <motion.div 
+                  key={item.Id || index}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  style={{ background: '#1f2937', border: '1px solid #374151', padding: '1.25rem', borderRadius: '12px' }}
+                >
+                  <h4 style={{ color: '#f59e0b', fontSize: '1rem', marginBottom: '0.4rem' }}>{item.Estudiante}</h4>
+                  <p style={{ fontSize: '0.9rem', color: '#94a3b8', fontStyle: 'italic' }}>"{item.Compromiso}"</p>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </motion.section>
 
       </main>
 
-      {/* FOOTER MODERNO */}
-      <footer className="footer-moderno">
-        <p>© 2026 Plan de Clase Digital Interactivo | Asignatura: Tecnologías de la Información y Comunicación</p>
+      <footer style={{ textAlign: 'center', padding: '2rem', color: '#64748b', borderTop: '1px solid #1f2937', fontSize: '0.9rem' }}>
+        © 2026 Plan de Clase Digital Interactivo • Facultad de Humanidades
       </footer>
 
     </div>
