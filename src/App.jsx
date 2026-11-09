@@ -1,122 +1,70 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import HeaderClase from './components/HeaderClase';
+import ObjetivoCard from './components/ObjetivoCard';
+import ActividadItem from './components/ActividadItem';
+import EvaluacionForm from './components/EvaluacionForm';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="app-container">
+      {/* HEADER SEMÁNTICO */}
+      <HeaderClase />
 
-      <div className="ticks"></div>
+      {/* MAIN SEMÁNTICO */}
+      <main className="main-content">
+        
+        {/* SECCIÓN 1: OBJETIVOS */}
+        <section className="seccion-bloque">
+          <h2 className="titulo-seccion">Objetivos de la Sesión</h2>
+          <div className="flex-grid">
+            <ObjetivoCard 
+              icono="🔒" 
+              titulo="Protección de Privacidad" 
+              descripcion="Identificar qué datos personales no deben compartirse públicamente en redes sociales." 
+            />
+            <ObjetivoCard 
+              icono="👣" 
+              titulo="Huella Digital Consciente" 
+              descripcion="Comprender la permanencia y el alcance de las publicaciones en el entorno web." 
+            />
+            <ObjetivoCard 
+              icono="🤝" 
+              titulo="Netiqueta y Respeto" 
+              descripcion="Promover una convivencia digital empática y libre de ciberacoso." 
+            />
+          </div>
+        </section>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+        {/* SECCIÓN 2: ACTIVIDADES / CASOS */}
+        <section className="seccion-bloque">
+          <h2 className="titulo-seccion">Casos Prácticos de Ética Digital</h2>
+          <div className="flex-column">
+            <ActividadItem 
+              numero="1"
+              titulo="El dilema de la contraseña compartida"
+              descripcion="Un amigo de tu confianza te pide la contraseña de tu cuenta para ver un juego."
+              consejo="Las credenciales de acceso son privadas e intransferibles. Compartirlas vulnera tu ciberseguridad y expone tus datos personales."
+            />
+            <ActividadItem 
+              numero="2"
+              titulo="La foto sin consentimiento"
+              descripcion="Tomas una foto graciosa de un compañero en clase y piensas subirla a redes sociales."
+              consejo="Respeta la privacidad y dignidad de los demás. Publicar contenido de terceros sin su autorización constituye una falta a la netiqueta."
+            />
+          </div>
+        </section>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+        {/* SECCIÓN 3: EVALUACIÓN Y NOCODB */}
+        <EvaluacionForm />
+
+      </main>
+
+      {/* FOOTER SEMÁNTICO */}
+      <footer className="footer-container">
+        <p>© 2026 Plan de Clase Digital Interactivo | Asignatura: Tecnologías de la Información y Comunicación</p>
+      </footer>
+    </div>
+  );
 }
 
-export default App
+export default App;
