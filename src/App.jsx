@@ -1,12 +1,56 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import EvaluacionForm from './components/EvaluacionForm';
 import './App.css';
 
-function App() {
+export default function App() {
+  const [nombre, setNombre] = useState('');
+  const [compromiso, setCompromiso] = useState('');
+  const [registros, setRegistros] = useState([]);
+  const [cargando, setCargando] = useState(false);
+  const [mensaje, setMensaje] = useState('');
+
+  // Cargar los compromisos guardados al iniciar
+  useEffect(() => {
+    const guardados = JSON.parse(localStorage.getItem('compromisos_etica_ux') || '[]');
+    if (guardados.length === 0) {
+      const iniciales = [
+        { Id: 1, Estudiante: 'María Gómez', Compromiso: 'Me comprometo a verificar las fuentes antes de compartir información en mis redes sociales.' },
+        { Id: 2, Estudiante: 'Josué López', Compromiso: 'Respetaré la privacidad de mis compañeros y no publicaré fotos sin su consentimiento.' }
+      ];
+      setRegistros(iniciales);
+      localStorage.setItem('compromisos_etica_ux', JSON.stringify(iniciales));
+    } else {
+      setRegistros(guardados);
+    }
+  }, []);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!nombre.trim() || !compromiso.trim()) return;
+
+    setCargando(true);
+    setMensaje('');
+
+    const nuevoRegistro = {
+      Id: Date.now(),
+      Estudiante: nombre,
+      Compromiso: compromiso
+    };
+
+    const nuevosRegistros = [nuevoRegistro, ...registros];
+    setRegistros(nuevosRegistros);
+    localStorage.setItem('compromisos_etica_ux', JSON.stringify(nuevosRegistros));
+
+    setMensaje('¡Tu compromiso de Ética Digital ha sido registrado con éxito en el mural!');
+    setNombre('');
+    setCompromiso('');
+    setCargando(false);
+  };
+
   return (
     <div className="app-container">
       
-      {/* NAVBAR SUPERIOR MODERNO (Con animación inicial) */}
+      {/* NAVBAR SUPERIOR MODERNO */}
       <motion.header 
         className="navbar-moderno"
         initial={{ y: -50, opacity: 0 }}
@@ -26,7 +70,7 @@ function App() {
         <a href="#evaluacion" className="nav-btn">Evaluarme</a>
       </motion.header>
 
-      {/* HERO SECTION DE ALTO IMPACTO CON ANIMACIONES FRAMER MOTION */}
+      {/* HERO SECTION DE ALTO IMPACTO (Azul y Dorado) */}
       <section className="hero-section">
         <motion.div 
           className="hero-badge"
@@ -74,22 +118,13 @@ function App() {
               La <strong>Ética Digital</strong> comprende el conjunto de principios y valores que orientan nuestro comportamiento al interactuar con las Tecnologías de la Información. En el Nivel Medio, los estudiantes se enfrentan cotidianamente a escenarios virtuales donde la privacidad y la seguridad son clave.
             </p>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem', marginTop: '1.5rem' }}>
-              <motion.div 
-                whileHover={{ scale: 1.03 }}
-                style={{ background: '#f8fafc', padding: '1rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}
-              >
+              <motion.div whileHover={{ scale: 1.03 }} style={{ background: '#f8fafc', padding: '1rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
                 <strong style={{ color: '#1e3a8a' }}>🔒 Privacidad:</strong> Conciencia sobre qué datos personales exponer en plataformas públicas.
               </motion.div>
-              <motion.div 
-                whileHover={{ scale: 1.03 }}
-                style={{ background: '#f8fafc', padding: '1rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}
-              >
+              <motion.div whileHover={{ scale: 1.03 }} style={{ background: '#f8fafc', padding: '1rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
                 <strong style={{ color: '#1e3a8a' }}>👣 Huella Digital:</strong> Comprensión de la permanencia y alcance de nuestras publicaciones.
               </motion.div>
-              <motion.div 
-                whileHover={{ scale: 1.03 }}
-                style={{ background: '#f8fafc', padding: '1rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}
-              >
+              <motion.div whileHover={{ scale: 1.03 }} style={{ background: '#f8fafc', padding: '1rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
                 <strong style={{ color: '#1e3a8a' }}>🤝 Netiqueta:</strong> Cortesía, empatía y prevención activa del ciberacoso.
               </motion.div>
             </div>
@@ -158,7 +193,69 @@ function App() {
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <EvaluacionForm />
+          <h2 className="titulo-seccion-moderno">Compromiso y Autoevaluación Digital</h2>
+          <p style={{ color: '#64748b', marginBottom: '1.5rem' }}>Registra tu compromiso personal de Netiqueta y Privacidad para finalizar la sesión.</p>
+
+          <motion.form 
+            onSubmit={handleSubmit}
+            className="form-card-moderno"
+            initial={{ scale: 0.98, opacity: 0 }}
+            whileInView={{ scale: 1, opacity: 1 }}
+            viewport={{ once: true }}
+          >
+            <div className="form-group-moderno">
+              <label>Nombre del Estudiante:</label>
+              <input 
+                type="text" 
+                value={nombre} 
+                onChange={(e) => setNombre(e.target.value)}
+                placeholder="Ej. Carlos Sitamul"
+                required 
+              />
+            </div>
+
+            <div className="form-group-moderno">
+              <label>Mi Compromiso de Ética Digital:</label>
+              <textarea 
+                rows="4" 
+                value={compromiso} 
+                onChange={(e) => setCompromiso(e.target.value)}
+                placeholder="Ej. Me comprometo a navegar con responsabilidad, proteger mis datos y respetar a los demás..."
+                required 
+              />
+            </div>
+
+            <button type="submit" className="btn-accion-moderno" disabled={cargando}>
+              {cargando ? 'Guardando...' : 'Registrar Mi Compromiso'}
+            </button>
+
+            {mensaje && (
+              <p style={{ marginTop: '0.5rem', color: '#059669', fontWeight: '600', background: '#ecfdf5', padding: '0.75rem', borderRadius: '6px', border: '1px solid #a7f3d0' }}>
+                {mensaje}
+              </p>
+            )}
+          </motion.form>
+
+          <div style={{ marginTop: '2.5rem' }}>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: '700', color: '#0f172a', marginBottom: '1rem' }}>Mural de Compromisos Registrados (Tiempo Real)</h3>
+            {registros.length === 0 ? (
+              <p style={{ color: '#94a3b8' }}>Aún no hay compromisos registrados.</p>
+            ) : (
+              <div className="grid-mural">
+                {registros.map((item, index) => (
+                  <motion.div 
+                    key={item.Id || index} 
+                    className="card-mural"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                  >
+                    <h4 style={{ color: '#1e3a8a', fontSize: '1rem', marginBottom: '0.4rem' }}>{item.Estudiante}</h4>
+                    <p style={{ fontSize: '0.9rem', color: '#475569', fontStyle: 'italic' }}>"{item.Compromiso}"</p>
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </div>
         </motion.section>
 
       </main>
@@ -171,5 +268,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
