@@ -1,85 +1,173 @@
-import HeaderClase from './components/HeaderClase';
-import ObjetivoCard from './components/ObjetivoCard';
-import ActividadItem from './components/ActividadItem';
+import { motion } from 'framer-motion';
 import EvaluacionForm from './components/EvaluacionForm';
 import './App.css';
 
 function App() {
   return (
     <div className="app-container">
-      {/* HEADER SEMÁNTICO */}
-      <HeaderClase />
+      
+      {/* NAVBAR SUPERIOR MODERNO (Con animación inicial) */}
+      <motion.header 
+        className="navbar-moderno"
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <div className="nav-brand">
+          <span className="nav-logo-box">TIC</span>
+          <span className="nav-title">Plan de Clase Digital</span>
+        </div>
+        <ul className="nav-links">
+          <li><a href="#teoria">Teoría</a></li>
+          <li><a href="#objetivos">Objetivos</a></li>
+          <li><a href="#casos">Casos</a></li>
+          <li><a href="#evaluacion">Compromiso</a></li>
+        </ul>
+        <a href="#evaluacion" className="nav-btn">Evaluarme</a>
+      </motion.header>
 
-      {/* MAIN SEMÁNTICO */}
+      {/* HERO SECTION DE ALTO IMPACTO CON ANIMACIONES FRAMER MOTION */}
+      <section className="hero-section">
+        <motion.div 
+          className="hero-badge"
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          Plan de Clase Interactivo • Nivel Medio
+        </motion.div>
+
+        <motion.h1 
+          className="hero-title"
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+        >
+          Ética Digital y <span>Huella en la Red</span>
+        </motion.h1>
+
+        <motion.p 
+          className="hero-subtitle"
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+        >
+          Aprende a navegar con responsabilidad, protegiendo tu privacidad y fomentando un trato respetuoso en el entorno digital.
+        </motion.p>
+      </section>
+
+      {/* MAIN CONTENT */}
       <main className="main-content">
         
-        {/* SECCIÓN NUEVA: MARCO TEÓRICO AMPLIADO SOBRE ÉTICA DIGITAL */}
-        <section className="seccion-bloque">
-          <h2 className="titulo-seccion">Fundamentos de la Ética Digital en el Nivel Medio</h2>
-          <div className="card-teoria" style={{ background: 'white', padding: '2rem', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', lineHeight: '1.7' }}>
-            <p>
-              La <strong>Ética Digital</strong> comprende el conjunto de principios, normas y valores que orientan nuestro comportamiento al interactuar con las Tecnologías de la Información y la Comunicación (TIC). En la actualidad, los estudiantes de Nivel Medio (Ciclo Básico y Bachillerato) se enfrentan cotidianamente a escenarios virtuales donde la delgada línea entre lo público y lo privado puede comprometer su integridad y seguridad.
+        {/* SECCIÓN: MARCO TEÓRICO */}
+        <motion.section 
+          id="teoria" 
+          className="seccion-card"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          <h2 className="titulo-seccion-moderno">Fundamentos de la Ética Digital</h2>
+          <div style={{ lineHeight: '1.8', color: '#334155' }}>
+            <p style={{ marginBottom: '1rem' }}>
+              La <strong>Ética Digital</strong> comprende el conjunto de principios y valores que orientan nuestro comportamiento al interactuar con las Tecnologías de la Información. En el Nivel Medio, los estudiantes se enfrentan cotidianamente a escenarios virtuales donde la privacidad y la seguridad son clave.
             </p>
-            <h3 style={{ color: '#4f46e5', marginTop: '1.2rem', fontSize: '1.2rem' }}>Pilares Fundamentales:</h3>
-            <ul style={{ paddingLeft: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.5rem' }}>
-              <li><strong>Privacidad y Datos Personales:</strong> Conciencia sobre qué información compartir y los riesgos de exponer datos sensibles en plataformas públicas.</li>
-              <li><strong>Huella Digital:</strong> Comprensión de que cada registro, comentario o fotografía publicada en la web es persistente y forma una reputación digital a largo plazo.</li>
-              <li><strong>Netiqueta:</strong> Práctica de normas de cortesía, respeto mutuo y empatía para prevenir el ciberacoso (cyberbullying).</li>
-              <li><strong>Propiedad Intelectual:</strong> Reconocimiento y citación adecuada de los contenidos creados por terceros en el entorno digital.</li>
-            </ul>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem', marginTop: '1.5rem' }}>
+              <motion.div 
+                whileHover={{ scale: 1.03 }}
+                style={{ background: '#f8fafc', padding: '1rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}
+              >
+                <strong style={{ color: '#1e3a8a' }}>🔒 Privacidad:</strong> Conciencia sobre qué datos personales exponer en plataformas públicas.
+              </motion.div>
+              <motion.div 
+                whileHover={{ scale: 1.03 }}
+                style={{ background: '#f8fafc', padding: '1rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}
+              >
+                <strong style={{ color: '#1e3a8a' }}>👣 Huella Digital:</strong> Comprensión de la permanencia y alcance de nuestras publicaciones.
+              </motion.div>
+              <motion.div 
+                whileHover={{ scale: 1.03 }}
+                style={{ background: '#f8fafc', padding: '1rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}
+              >
+                <strong style={{ color: '#1e3a8a' }}>🤝 Netiqueta:</strong> Cortesía, empatía y prevención activa del ciberacoso.
+              </motion.div>
+            </div>
           </div>
-        </section>
+        </motion.section>
 
-        {/* SECCIÓN 1: OBJETIVOS */}
-        <section className="seccion-bloque">
-          <h2 className="titulo-seccion">Objetivos de Aprendizaje</h2>
-          <div className="flex-grid">
-            <ObjetivoCard 
-              icono="🔒" 
-              titulo="Protección de Privacidad" 
-              descripcion="Identificar qué datos personales no deben compartirse públicamente en redes sociales." 
-            />
-            <ObjetivoCard 
-              icono="👣" 
-              titulo="Huella Digital Consciente" 
-              descripcion="Comprender la permanencia y el alcance de las publicaciones en el entorno web." 
-            />
-            <ObjetivoCard 
-              icono="🤝" 
-              titulo="Netiqueta y Respeto" 
-              descripcion="Promover una convivencia digital empática y libre de ciberacoso." 
-            />
+        {/* SECCIÓN: OBJETIVOS */}
+        <motion.section 
+          id="objetivos" 
+          className="seccion-card"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          <h2 className="titulo-seccion-moderno">Objetivos de la Sesión</h2>
+          <div className="grid-objetivos">
+            <motion.div className="card-objetivo-item" whileHover={{ y: -5 }}>
+              <div className="icono-box">🔒</div>
+              <h3 style={{ fontSize: '1.1rem', marginBottom: '0.5rem', color: '#0f172a' }}>Protección de Privacidad</h3>
+              <p style={{ fontSize: '0.95rem', color: '#64748b' }}>Identificar qué datos personales no deben compartirse públicamente en redes sociales.</p>
+            </motion.div>
+            <motion.div className="card-objetivo-item" whileHover={{ y: -5 }}>
+              <div className="icono-box">👣</div>
+              <h3 style={{ fontSize: '1.1rem', marginBottom: '0.5rem', color: '#0f172a' }}>Huella Digital Consciente</h3>
+              <p style={{ fontSize: '0.95rem', color: '#64748b' }}>Comprender la permanencia y el alcance de las publicaciones en el entorno web.</p>
+            </motion.div>
+            <motion.div className="card-objetivo-item" whileHover={{ y: -5 }}>
+              <div className="icono-box">🤝</div>
+              <h3 style={{ fontSize: '1.1rem', marginBottom: '0.5rem', color: '#0f172a' }}>Netiqueta y Respeto</h3>
+              <p style={{ fontSize: '0.95rem', color: '#64748b' }}>Promover una convivencia digital empática y libre de ciberacoso escolar.</p>
+            </motion.div>
           </div>
-        </section>
+        </motion.section>
 
-        {/* SECCIÓN 2: ACTIVIDADES / CASOS */}
-        <section className="seccion-bloque">
-          <h2 className="titulo-seccion">Casos Prácticos de Análisis Ético</h2>
-          <div className="flex-column">
-            <ActividadItem 
-              numero="1"
-              titulo="El dilema de la contraseña compartida"
-              descripcion="Un amigo de tu confianza te pide la contraseña de tu cuenta personal para ver un videojuego o red social."
-              consejo="Las credenciales de acceso son privadas e intransferibles. Compartirlas vulnera tu ciberseguridad y te hace responsable civil y éticamente de cualquier acción realizada bajo tu cuenta."
-            />
-            <ActividadItem 
-              numero="2"
-              titulo="La fotografía sin consentimiento"
-              descripcion="Tomas una foto en el aula donde un compañero aparece en una situación graciosa y piensas publicarla en tus estados públicos."
-              consejo="Respeta la dignidad y el derecho a la propia imagen de los demás. Publicar contenido de terceros sin autorización explícita vulnera las normas básicas de netiqueta escolar."
-            />
+        {/* SECCIÓN: CASOS PRÁCTICOS */}
+        <motion.section 
+          id="casos" 
+          className="seccion-card"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          <h2 className="titulo-seccion-moderno">Casos Prácticos de Análisis Ético</h2>
+          <div className="grid-casos">
+            <motion.div className="caso-item" whileHover={{ scale: 1.01 }}>
+              <h4 style={{ color: '#1e3a8a', marginBottom: '0.4rem' }}>Caso 1: El dilema de la contraseña compartida</h4>
+              <p style={{ fontSize: '0.95rem', color: '#334155', marginBottom: '0.5rem' }}>Un amigo te pide la contraseña de tu cuenta personal para ver un videojuego.</p>
+              <p style={{ fontSize: '0.85rem', color: '#d97706', fontWeight: '600' }}>💡 Consejo ético: Las credenciales son intransferibles y resguardan tu ciberseguridad.</p>
+            </motion.div>
+            <motion.div className="caso-item" whileHover={{ scale: 1.01 }}>
+              <h4 style={{ color: '#1e3a8a', marginBottom: '0.4rem' }}>Caso 2: La fotografía sin consentimiento</h4>
+              <p style={{ fontSize: '0.95rem', color: '#334155', marginBottom: '0.5rem' }}>Tomas una foto graciosa de un compañero en clase y piensas subirla a estados públicos.</p>
+              <p style={{ fontSize: '0.85rem', color: '#d97706', fontWeight: '600' }}>💡 Consejo ético: Respeta la dignidad y el derecho a la propia imagen de los demás.</p>
+            </motion.div>
           </div>
-        </section>
+        </motion.section>
 
-        {/* SECCIÓN 3: EVALUACIÓN / CUESTIONARIO INTERACTIVO */}
-        <EvaluacionForm />
+        {/* SECCIÓN: EVALUACIÓN Y MURAL */}
+        <motion.section 
+          id="evaluacion" 
+          className="seccion-card"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          <EvaluacionForm />
+        </motion.section>
 
       </main>
 
-      {/* FOOTER SEMÁNTICO */}
-      <footer className="footer-container">
+      {/* FOOTER MODERNO */}
+      <footer className="footer-moderno">
         <p>© 2026 Plan de Clase Digital Interactivo | Asignatura: Tecnologías de la Información y Comunicación</p>
       </footer>
+
     </div>
   );
 }
