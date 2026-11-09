@@ -8,8 +8,9 @@ export default function EvaluacionForm() {
   const [cargando, setCargando] = useState(false);
   const [mensaje, setMensaje] = useState('');
 
-  // CONFIGURACIÓN EXACTA DE TU NOCODB
-  const API_URL = 'https://app.nocodb.com/api/v3/data/pb3dzykiqcnyt3h/mqbl61zxs1lggru/records?pageSize=25';
+  // ENDPOINT Y TOKEN CORREGIDOS PARA NOCODB
+  // Usamos la API v1 de datos que es la más estable para inserciones directas
+  const API_URL = 'https://app.nocodb.com/api/v1/db/data/v1/pb3dzykiqcnyt3h/compromisos_etica';
   const API_TOKEN = 'nc_pat_4UnN7VREMPdWecJGReEUWqjfCUODdnQ8Q7Fdm3ZT';
 
   // LEER REGISTROS (READ)
@@ -62,10 +63,12 @@ export default function EvaluacionForm() {
         setCompromiso('');
         obtenerRegistros(); // Recargar el mural en tiempo real
       } else {
+        const errorData = await res.json();
+        console.error('Detalle del error NocoDB:', errorData);
         setMensaje('Ocurrió un error al guardar tu respuesta. Revisa la consola.');
       }
     } catch (err) {
-      console.error('Error al guardar en NocoDB:', err);
+      console.error('Error de conexión:', err);
       setMensaje('Error de conexión con la base de datos.');
     } finally {
       setCargando(false);
@@ -101,7 +104,7 @@ export default function EvaluacionForm() {
             rows="4" 
             value={compromiso} 
             onChange={(e) => setCompromiso(e.target.value)}
-            placeholder="Ej. Me comprometo a no compartir información personal de terceros sin consentimiento y verificar fuentes de información..."
+            placeholder="Ej. Me comprometo a no compartir información personal de terceros sin consentimiento..."
             required 
           />
         </div>
